@@ -45,31 +45,49 @@ namespace D2RAssist
         private bool _show = true;
         private Screen _screen;
 
+        private readonly Utils utils;
+        private readonly Map map;
+        private readonly Api api;
+        private readonly Rendering rendering;
+        private readonly PointOfInterestHandler pointOfInterestHandler;
+
+
+
+
         public Overlay(IKeyboardMouseEvents keyboardMouseEvents)
         {
             InitializeComponent();
+
+            IConfiguration configuration = new Settings.Configuration();
+            utils = new Utils(configuration);
+            map = new Map(configuration, utils);
+            api = new Api(configuration);
+            rendering = new Rendering(utils);
+            pointOfInterestHandler = new PointOfInterestHandler(rendering);
+
+
             keyboardMouseEvents.KeyPress += (_, args) =>
             {
                 if (InGame())
                 {
-                    if (args.KeyChar == Settings.Map.ToggleKey)
+                    if (args.KeyChar == map.ToggleKey)
                     {
                         _show = !_show;
                     }
-                    if (args.KeyChar == Settings.Map.ZoomInKey)
+                    if (args.KeyChar == map.ZoomInKey)
                     {
-                        if (Settings.Map.ZoomLevel > 0.25f)
+                        if (map.ZoomLevel > 0.25f)
                         {
-                            Settings.Map.ZoomLevel -= 0.25f;
-                            Settings.Map.Size = (int)(Settings.Map.Size * 1.15f);
+                            map.ZoomLevel -= 0.25f;
+                            map.Size = (int)(map.Size * 1.15f);
                         }
                     }
-                    if (args.KeyChar == Settings.Map.ZoomOutKey)
+                    if (args.KeyChar == map.ZoomOutKey)
                     {
-                        if (Settings.Map.ZoomLevel < 4f)
+                        if (map.ZoomLevel < 4f)
                         {
-                            Settings.Map.ZoomLevel += 0.25f;
-                            Settings.Map.Size = (int)(Settings.Map.Size * .85f);
+                            map.ZoomLevel += 0.25f;
+                            map.Size = (int)(map.Size * .85f);
                         }
                     }
                 }
@@ -78,19 +96,19 @@ namespace D2RAssist
 
         private void Overlay_Load(object sender, EventArgs e)
         {
-            Settings.Map.InitMapColors();
+            map.InitMapColors();
             Rectangle screen = Screen.PrimaryScreen.WorkingArea;
             var width = Width >= screen.Width ? screen.Width : (screen.Width + Width) / 2;
             var height = Height >= screen.Height ? screen.Height : (screen.Height + Height) / 2;
             Location = new Point((screen.Width - width) / 2, (screen.Height - height) / 2);
             Size = new Size(width, height);
-            Opacity = Settings.Map.Opacity;
+            Opacity = map.Opacity;
 
-            _timer.Interval = Settings.Map.UpdateTime;
+            _timer.Interval = map.UpdateTime;
             _timer.Tick += MapUpdateTimer_Tick;
             _timer.Start();
 
-            if (Settings.Map.AlwaysOnTop)
+            if (map.AlwaysOnTop)
             {
                 var initialStyle = (uint)WindowsExternal.GetWindowLongPtr(Handle, -20);
                 WindowsExternal.SetWindowLong(Handle, -20, initialStyle | 0x80000 | 0x20);
@@ -119,7 +137,7 @@ namespace D2RAssist
                 {
                     Console.WriteLine($"Game changed: {gameData}");
                     _mapApi?.Dispose();
-                    _mapApi = new MapApi(MapApi.Client, Settings.Api.Endpoint, gameData.Difficulty, gameData.MapSeed);
+                    _mapApi = new MapApi(MapApi.Client, api.Endpoint, gameData.Difficulty, gameData.MapSeed, map);
                 }
 
                 if (gameData.HasMapChanged(_currentGameData))
@@ -128,8 +146,8 @@ namespace D2RAssist
                     if (gameData.Area != Area.None)
                     {
                         _areaData = _mapApi.GetMapData(gameData.Area);
-                        List<PointOfInterest> pointsOfInterest = PointOfInterestHandler.Get(_mapApi, _areaData);
-                        _compositor = new Compositor(_areaData, pointsOfInterest);
+                        List<PointOfInterest> pointsOfInterest = pointOfInterestHandler.Get(_mapApi, _areaData);
+                        _compositor = new Compositor(_areaData, pointsOfInterest, rendering, map);
                     }
                     else
                     {
@@ -157,9 +175,9 @@ namespace D2RAssist
         {
             if (!_show) return true;
             if (_currentGameData.Area == Area.None) return true;
-            if (Array.Exists(Settings.Map.HiddenAreas, element => element == _currentGameData.Area)) return true;
+            if (Array.Exists(map.HiddenAreas, element => element == _currentGameData.Area)) return true;
             if (!InGame()) return true;
-            if (Settings.Map.ToggleViaInGameMap && !_currentGameData.MapShown) return true;
+            if (map.ToggleViaInGameMap && !_currentGameData.MapShown) return true;
             return false;
         }
 
@@ -178,23 +196,23 @@ namespace D2RAssist
 
             UpdateLocation();
 
-            Bitmap gameMap = _compositor.Compose(_currentGameData, !Settings.Map.OverlayMode);
+            Bitmap gameMap = _compositor.Compose(_currentGameData, !map.OverlayMode);
 
-            if (Settings.Map.OverlayMode)
+            if (map.OverlayMode)
             {
                 float w = 0;
                 float h = 0;
                 var scale = 0.0F;
                 var center = new Vector2();
 
-                if (ConfigurationManager.AppSettings["ZoomLevelDefault"] == null) { Settings.Map.ZoomLevel = 1; }
+                if (ConfigurationManager.AppSettings["ZoomLevelDefault"] == null) { map.ZoomLevel = 1; }
 
-                switch (Settings.Map.Position)
+                switch (map.Position)
                 {
                     case MapPosition.Center:
                         w = _screen.WorkingArea.Width;
                         h = _screen.WorkingArea.Height;
-                        scale = (1024.0F / h * w * 3f / 4f / 2.3F) * Settings.Map.ZoomLevel;
+                        scale = (1024.0F / h * w * 3f / 4f / 2.3F) * map.ZoomLevel;
                         center = new Vector2(w / 2, h / 2 + 20);
 
                         e.Graphics.SetClip(new RectangleF(0, 0, w, h));
@@ -202,7 +220,7 @@ namespace D2RAssist
                     case MapPosition.TopLeft:
                         w = 640;
                         h = 360;
-                        scale = (1024.0F / h * w * 3f / 4f / 3.35F) * Settings.Map.ZoomLevel;
+                        scale = (1024.0F / h * w * 3f / 4f / 3.35F) * map.ZoomLevel;
                         center = new Vector2(w / 2, (h / 2) + 48);
 
                         e.Graphics.SetClip(new RectangleF(0, 50, w, h));
@@ -210,7 +228,7 @@ namespace D2RAssist
                     case MapPosition.TopRight:
                         w = 640;
                         h = 360;
-                        scale = (1024.0F / h * w * 3f / 4f / 3.35F) * Settings.Map.ZoomLevel;
+                        scale = (1024.0F / h * w * 3f / 4f / 3.35F) * map.ZoomLevel;
                         center = new Vector2(w / 2, (h / 2) + 40);
 
                         e.Graphics.TranslateTransform(_screen.WorkingArea.Width - w, -8);
@@ -244,7 +262,7 @@ namespace D2RAssist
             else
             {
                 var anchor = new Point(0, 0);
-                switch (Settings.Map.Position)
+                switch (map.Position)
                 {
                     case MapPosition.Center:
                         anchor = new Point(_screen.WorkingArea.Width / 2, _screen.WorkingArea.Height / 2);

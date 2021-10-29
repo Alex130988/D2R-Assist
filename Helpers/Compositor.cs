@@ -33,15 +33,19 @@ namespace D2RAssist.Helpers
         private readonly Bitmap _background;
         public readonly Point CropOffset;
         private readonly IReadOnlyList<PointOfInterest> _pointsOfInterest;
+        private readonly Rendering rendering;
+        private readonly Map map;
         private readonly Dictionary<(string, int), Font> _fontCache = new Dictionary<(string, int), Font>();
 
         private readonly Dictionary<(Shape, int, Color), Bitmap> _iconCache =
             new Dictionary<(Shape, int, Color), Bitmap>();
 
-        public Compositor(AreaData areaData, IReadOnlyList<PointOfInterest> pointOfInterest)
+        public Compositor(AreaData areaData, IReadOnlyList<PointOfInterest> pointOfInterest, Rendering rendering, Map map)
         {
             _areaData = areaData;
             _pointsOfInterest = pointOfInterest;
+            this.rendering = rendering;
+            this.map = map;
             (_background, CropOffset) = DrawBackground(areaData, pointOfInterest);
         }
 
@@ -65,11 +69,11 @@ namespace D2RAssist.Helpers
                 Point localPlayerPosition = gameData.PlayerPosition
                     .OffsetFrom(_areaData.Origin)
                     .OffsetFrom(CropOffset)
-                    .OffsetFrom(new Point(Settings.Rendering.Player.IconSize, Settings.Rendering.Player.IconSize));
+                    .OffsetFrom(new Point(rendering.Player.IconSize, rendering.Player.IconSize));
 
-                if (Settings.Rendering.Player.CanDrawIcon())
+                if (rendering.Player.CanDrawIcon())
                 {
-                    Bitmap playerIcon = GetIcon(Settings.Rendering.Player);
+                    Bitmap playerIcon = GetIcon(rendering.Player);
                     imageGraphics.DrawImage(playerIcon, localPlayerPosition);
                 }
 
@@ -98,7 +102,7 @@ namespace D2RAssist.Helpers
             {
                 double biggestDimension = Math.Max(image.Width, image.Height);
 
-                multiplier = Settings.Map.Size / biggestDimension;
+                multiplier = map.Size / biggestDimension;
 
                 if (multiplier == 0)
                 {
@@ -114,7 +118,7 @@ namespace D2RAssist.Helpers
             }
 
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (scale && Settings.Map.Rotate)
+            if (scale && map.Rotate)
             {
                 image = ImageUtils.RotateImage(image, 53, true, false, Color.Transparent);
             }
@@ -141,7 +145,7 @@ namespace D2RAssist.Helpers
                     for (var x = 0; x < areaData.CollisionGrid[y].Length; x++)
                     {
                         var type = areaData.CollisionGrid[y][x];
-                        Color? typeColor = Settings.Map.MapColors[type];
+                        Color? typeColor = map.MapColors[type];
                         if (typeColor != null)
                         {
                             background.SetPixel(x, y, (Color)typeColor);
