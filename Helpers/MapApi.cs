@@ -17,6 +17,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **/
 
+using D2RAssist.Settings;
 using D2RAssist.Types;
 using Newtonsoft.Json;
 using System;
@@ -37,6 +38,7 @@ namespace D2RAssist.Helpers
     {
         public static readonly HttpClient Client = HttpClient();
         private readonly string _endpoint;
+        private readonly Map map;
         private readonly string _sessionId;
         private readonly ConcurrentDictionary<Area, AreaData> _cache;
         private readonly BlockingCollection<Area[]> _prefetchRequests;
@@ -67,10 +69,11 @@ namespace D2RAssist.Helpers
             response.EnsureSuccessStatusCode();
         }
 
-        public MapApi(HttpClient client, string endpoint, Difficulty difficulty, uint mapSeed)
+        public MapApi(HttpClient client, string endpoint, Difficulty difficulty, uint mapSeed, Map map)
         {
             _client = client;
             _endpoint = endpoint;
+            this.map = map;
             _sessionId = CreateSession(endpoint, difficulty, mapSeed); ;
             // Cache for pre-fetching maps for the surrounding areas.
             _cache = new ConcurrentDictionary<Area, AreaData>();
@@ -79,9 +82,9 @@ namespace D2RAssist.Helpers
             _thread.IsBackground = true;
             _thread.Start();
 
-            if (Settings.Map.PrefetchAreas.Any())
+            if (map.PrefetchAreas.Any())
             {
-                _prefetchRequests.Add(Settings.Map.PrefetchAreas);
+                _prefetchRequests.Add(map.PrefetchAreas);
             }
         }
 
@@ -108,7 +111,7 @@ namespace D2RAssist.Helpers
             while (true)
             {
                 Area[] areas = _prefetchRequests.Take();
-                if (Settings.Map.ClearPrefetchedOnAreaChange)
+                if (map.ClearPrefetchedOnAreaChange)
                 {
                     _cache.Clear();
                 }

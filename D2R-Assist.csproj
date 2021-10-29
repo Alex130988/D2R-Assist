@@ -126,6 +126,7 @@
     <Compile Include="Helpers\MapApi.cs" />
     <Compile Include="Helpers\Compositor.cs" />
     <Compile Include="Helpers\WindowsExternal.cs" />
+    <Compile Include="Settings\Configuration.cs" />
     <Compile Include="Types\Area.cs" />
     <Compile Include="Types\Difficulty.cs" />
     <Compile Include="Types\GameData.cs" />
@@ -149,6 +150,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

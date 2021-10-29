@@ -17,6 +17,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **/
 
+using D2RAssist.Settings;
 using D2RAssist.Types;
 using System.Collections.Generic;
 using System.Drawing;
@@ -25,9 +26,9 @@ using System.Threading.Tasks;
 
 namespace D2RAssist.Helpers
 {
-    public static class PointOfInterestHandler
+    public class PointOfInterestHandler
     {
-        private static readonly HashSet<GameObject> QuestObjects = new HashSet<GameObject>
+        private readonly HashSet<GameObject> QuestObjects = new HashSet<GameObject>
         {
             GameObject.HoradricCubeChest,
             GameObject.HoradricScrollChest,
@@ -41,7 +42,7 @@ namespace D2RAssist.Helpers
             GameObject.HellForge
         };
 
-        private static readonly HashSet<GameObject> GoodChests = new HashSet<GameObject>
+        private readonly HashSet<GameObject> GoodChests = new HashSet<GameObject>
         {
             GameObject.GoodChest,
             GameObject.SparklyChest,
@@ -50,8 +51,14 @@ namespace D2RAssist.Helpers
             GameObject.ArcaneSmallChestLeft,
             GameObject.ArcaneSmallChestRight
         };
+        private readonly Rendering rendering;
 
-        public static List<PointOfInterest> Get(MapApi mapApi, AreaData areaData)
+        public PointOfInterestHandler(Rendering rendering)
+        {
+            this.rendering = rendering;
+        }
+
+        public List<PointOfInterest> Get(MapApi mapApi, AreaData areaData)
         {
             var pointOfInterest = new List<PointOfInterest>();
 
@@ -82,7 +89,7 @@ namespace D2RAssist.Helpers
                         {
                             Label = realTomb.Name(),
                             Position = areaData.AdjacentLevels[realTomb].Exits[0],
-                            RenderingSettings = Settings.Rendering.NextArea
+                            RenderingSettings = rendering.NextArea
                         }); ;
                     }
 
@@ -101,7 +108,7 @@ namespace D2RAssist.Helpers
                                 {
                                     Label = highestArea.Name(),
                                     Position = areaData.AdjacentLevels[highestArea].Exits[0],
-                                    RenderingSettings = Settings.Rendering.NextArea
+                                    RenderingSettings = rendering.NextArea
                                 });
                             }
                         }
@@ -120,7 +127,7 @@ namespace D2RAssist.Helpers
                                 {
                                     Label = level.Area.Name(),
                                     Position = position,
-                                    RenderingSettings = Settings.Rendering.PreviousArea
+                                    RenderingSettings = rendering.PreviousArea
                                 });
                             }
                         }
@@ -146,7 +153,7 @@ namespace D2RAssist.Helpers
                     {
                         Label = obj.ToString(),
                         Position = points[0],
-                        RenderingSettings = Settings.Rendering.Waypoint
+                        RenderingSettings = rendering.Waypoint
                     });
                 }
                 // Quest objects
@@ -156,7 +163,7 @@ namespace D2RAssist.Helpers
                     {
                         Label = obj.ToString(),
                         Position = points[0],
-                        RenderingSettings = Settings.Rendering.Quest
+                        RenderingSettings = rendering.Quest
                     });
                 }
                 // Chests
@@ -168,7 +175,7 @@ namespace D2RAssist.Helpers
                         {
                             Label = obj.ToString(),
                             Position = point,
-                            RenderingSettings = Settings.Rendering.SuperChest
+                            RenderingSettings = rendering.SuperChest
                         });
                     }
                 }

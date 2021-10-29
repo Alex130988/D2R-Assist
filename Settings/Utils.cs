@@ -25,9 +25,16 @@ using System.Linq;
 
 namespace D2RAssist.Settings
 {
-    public static class Utils
+    public class Utils
     {
-        public static Area[] ParseCommaSeparatedAreasByName(string areas)
+        private readonly IConfiguration configuration;
+
+        public Utils(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
+        public Area[] ParseCommaSeparatedAreasByName(string areas)
         {
             return areas
                 .Split(',')
@@ -36,18 +43,18 @@ namespace D2RAssist.Settings
                 .ToArray();
         }
 
-        private static Area LookupAreaByName(string name)
+        private Area LookupAreaByName(string name)
         {
             return Enum.GetValues(typeof(Area)).Cast<Area>().FirstOrDefault(area => area.Name() == name);
         }
 
-        private static T GetConfigValue<T>(string key, Func<string, T> converter, T fallback = default)
+        private T GetConfigValue<T>(string key, Func<string, T> converter, T fallback = default)
         {
-            var valueString = ConfigurationManager.AppSettings[key];
+            var valueString = configuration.Config[key].ToString();
             return string.IsNullOrWhiteSpace(valueString) ? fallback : converter.Invoke(valueString);
         }
 
-        public static Color ParseColor(string value)
+        public Color ParseColor(string value)
         {
             if (value.StartsWith("#"))
             {
@@ -71,7 +78,7 @@ namespace D2RAssist.Settings
             return Color.FromName(value);
         }
 
-        public static PointOfInterestRendering GetRenderingSettingsForPrefix(string name)
+        public PointOfInterestRendering GetRenderingSettingsForPrefix(string name)
         {
             return new PointOfInterestRendering
             {

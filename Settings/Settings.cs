@@ -18,36 +18,59 @@
  **/
 
 using D2RAssist.Types;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
+using System.IO;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 
 namespace D2RAssist.Settings
 {
-    public static class Rendering
+    public class Rendering
     {
-        public static PointOfInterestRendering
-            NextArea = Utils.GetRenderingSettingsForPrefix("NextArea");
+        private readonly Utils utils;
 
-        public static PointOfInterestRendering PreviousArea =
-            Utils.GetRenderingSettingsForPrefix("PreviousArea");
+        public PointOfInterestRendering
+            NextArea => utils.GetRenderingSettingsForPrefix("NextArea");
 
-        public static PointOfInterestRendering Waypoint = Utils.GetRenderingSettingsForPrefix("Waypoint");
-        public static PointOfInterestRendering Quest = Utils.GetRenderingSettingsForPrefix("Quest");
-        public static PointOfInterestRendering Player = Utils.GetRenderingSettingsForPrefix("Player");
+        public PointOfInterestRendering PreviousArea =>
+            utils.GetRenderingSettingsForPrefix("PreviousArea");
 
-        public static PointOfInterestRendering SuperChest =
-            Utils.GetRenderingSettingsForPrefix("SuperChest");
+        public PointOfInterestRendering Waypoint => utils.GetRenderingSettingsForPrefix("Waypoint");
+        public PointOfInterestRendering Quest => utils.GetRenderingSettingsForPrefix("Quest");
+        public PointOfInterestRendering Player => utils.GetRenderingSettingsForPrefix("Player");
+
+        public PointOfInterestRendering SuperChest =>
+            utils.GetRenderingSettingsForPrefix("SuperChest");
+
+        public Rendering(Utils utils)
+        {
+            this.utils = utils;
+        }
     }
 
-    public static class Map
+    public class Map
     {
-        public static readonly Dictionary<int, Color?> MapColors = new Dictionary<int, Color?>();
+        public readonly Dictionary<int, Color?> MapColors = new Dictionary<int, Color?>();
+        private readonly IConfiguration configuration;
+        private readonly Utils utils;
 
-        public static void InitMapColors()
+        private float zoomLevel;
+        private int size;
+
+        public Map(IConfiguration configuration, Utils utils)
+        {
+            this.configuration = configuration;
+            this.utils = utils;
+
+            zoomLevel = Convert.ToSingle(configuration.Config["ZoomLevelDefault"]);
+            size = Convert.ToInt16(configuration.Config["Size"]);
+        }
+
+        public void InitMapColors()
         {
             for (var i = -1; i < 600; i++)
             {
@@ -55,16 +78,16 @@ namespace D2RAssist.Settings
             }
         }
 
-        public static Color? LookupMapColor(int type)
+        public Color? LookupMapColor(int type)
         {
             var key = "MapColor[" + type + "]";
 
             if (!MapColors.ContainsKey(type))
             {
-                var mapColorString = ConfigurationManager.AppSettings[key];
+                var mapColorString = configuration.Config[key].ToString();
                 if (!string.IsNullOrEmpty(mapColorString))
                 {
-                    MapColors[type] = Utils.ParseColor(mapColorString);
+                    MapColors[type] = utils.ParseColor(mapColorString);
                 }
                 else
                 {
@@ -75,40 +98,74 @@ namespace D2RAssist.Settings
             return MapColors[type];
         }
 
-        public static double Opacity = Convert.ToDouble(ConfigurationManager.AppSettings["Opacity"],
+        public double Opacity => Convert.ToDouble(configuration.Config["Opacity"],
             System.Globalization.CultureInfo.InvariantCulture);
 
-        public static bool OverlayMode = Convert.ToBoolean(ConfigurationManager.AppSettings["OverlayMode"]);
+        public bool OverlayMode => Convert.ToBoolean(configuration.Config["OverlayMode"]);
 
-        public static bool AlwaysOnTop = Convert.ToBoolean(ConfigurationManager.AppSettings["AlwaysOnTop"]);
+        public bool AlwaysOnTop => Convert.ToBoolean(configuration.Config["AlwaysOnTop"]);
 
-        public static bool ToggleViaInGameMap =
-            Convert.ToBoolean(ConfigurationManager.AppSettings["ToggleViaInGameMap"]);
+        public bool ToggleViaInGameMap =>
+            Convert.ToBoolean(configuration.Config["ToggleViaInGameMap"]);
 
-        public static int Size = Convert.ToInt16(ConfigurationManager.AppSettings["Size"]);
+        public int Size
+        {
+            get
+            {
+                return size;
+            }
+            set
+            {
+                if(value != size)
+                {
+                    size = value;
+                }
+            }
+        }
 
-        public static MapPosition Position =
-            (MapPosition)Enum.Parse(typeof(MapPosition), ConfigurationManager.AppSettings["MapPosition"], true);
+        public MapPosition Position =>
+            (MapPosition)Enum.Parse(typeof(MapPosition), configuration.Config["MapPosition"].ToString(), true);
 
-        public static int UpdateTime = Convert.ToInt16(ConfigurationManager.AppSettings["UpdateTime"]);
-        public static bool Rotate = Convert.ToBoolean(ConfigurationManager.AppSettings["Rotate"]);
-        public static char ToggleKey = Convert.ToChar(ConfigurationManager.AppSettings["ToggleKey"]);
-        public static char ZoomInKey = Convert.ToChar(ConfigurationManager.AppSettings["ZoomInKey"]);
-        public static char ZoomOutKey = Convert.ToChar(ConfigurationManager.AppSettings["ZoomOutKey"]);
-        public static float ZoomLevel = Convert.ToSingle(ConfigurationManager.AppSettings["ZoomLevelDefault"]);
+        public int UpdateTime => Convert.ToInt16(configuration.Config["UpdateTime"]);
+        public bool Rotate => Convert.ToBoolean(configuration.Config["Rotate"]);
+        public char ToggleKey => Convert.ToChar(configuration.Config["ToggleKey"]);
+        public char ZoomInKey => Convert.ToChar(configuration.Config["ZoomInKey"]);
+        public char ZoomOutKey => Convert.ToChar(configuration.Config["ZoomOutKey"]);
+        public float ZoomLevel
+        {
+            get
+            {
+                return zoomLevel;
+            }
+            set
+            {
+                if(value != zoomLevel)
+                {
+                    zoomLevel = value;
+                }
+            }
+        }
 
-        public static Area[] PrefetchAreas =
-            Utils.ParseCommaSeparatedAreasByName(ConfigurationManager.AppSettings["PrefetchAreas"]);
+        public Area[] PrefetchAreas =>
+            utils.ParseCommaSeparatedAreasByName(configuration.Config["PrefetchAreas"].ToString());
 
-        public static Area[] HiddenAreas =
-            Utils.ParseCommaSeparatedAreasByName(ConfigurationManager.AppSettings["HiddenAreas"]);
+        public Area[] HiddenAreas =>
+            utils.ParseCommaSeparatedAreasByName(configuration.Config["HiddenAreas"].ToString());
 
-        public static bool ClearPrefetchedOnAreaChange =
-            Convert.ToBoolean(ConfigurationManager.AppSettings["ClearPrefetchedOnAreaChange"]);
+        public bool ClearPrefetchedOnAreaChange =>
+            Convert.ToBoolean(configuration.Config["ClearPrefetchedOnAreaChange"]);
+
     }
 
-    public static class Api
+    public class Api
     {
-        public static string Endpoint = ConfigurationManager.AppSettings["ApiEndpoint"];
+        private readonly IConfiguration configuration;
+
+        public Api(IConfiguration configuration)
+        {
+            this.configuration = configuration;
+        }
+
+        public string Endpoint => configuration.Config["ApiEndpoint"].ToString();
     }
 }
