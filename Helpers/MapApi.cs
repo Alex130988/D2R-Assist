@@ -45,16 +45,16 @@ namespace MapAssist.Helpers
 
         private string CreateSession(string endpoint, Difficulty difficulty, uint mapSeed)
         {
-            Dictionary<string, uint> values = new Dictionary<string, uint>
+            var values = new Dictionary<string, uint>
             {
                 { "difficulty", (uint)difficulty },
                 { "mapid", mapSeed }
             };
 
-            string json = JsonConvert.SerializeObject(values);
+            var json = JsonConvert.SerializeObject(values);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             HttpResponseMessage response = _client.PostAsync(endpoint + "sessions/", content).GetAwaiter().GetResult();
-            var session =
+            MapApiSession session =
                 JsonConvert.DeserializeObject<MapApiSession>(response.Content.ReadAsStringAsync().GetAwaiter()
                     .GetResult());
             return session.id;
@@ -135,7 +135,7 @@ namespace MapAssist.Helpers
             HttpResponseMessage response = _client.GetAsync(_endpoint + "sessions/" + _sessionId +
                                                             "/areas/" + (uint)area).GetAwaiter().GetResult();
             response.EnsureSuccessStatusCode();
-            var rawMapData =
+            RawAreaData rawMapData =
                 JsonConvert.DeserializeObject<RawAreaData>(response.Content.ReadAsStringAsync().GetAwaiter()
                     .GetResult());
             return rawMapData.ToInternal(area);

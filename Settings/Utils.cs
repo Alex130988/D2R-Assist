@@ -17,11 +17,11 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **/
 
+using MapAssist.Types;
 using System;
 using System.Configuration;
 using System.Drawing;
 using System.Linq;
-using MapAssist.Types;
 
 namespace MapAssist.Settings
 {
@@ -43,7 +43,7 @@ namespace MapAssist.Settings
 
         private static T GetConfigValue<T>(string key, Func<string, T> converter, T fallback = default)
         {
-            string valueString = ConfigurationManager.AppSettings[key];
+            var valueString = ConfigurationManager.AppSettings[key];
             return string.IsNullOrWhiteSpace(valueString) ? fallback : converter.Invoke(valueString);
         }
 
@@ -59,7 +59,7 @@ namespace MapAssist.Settings
                 return Color.FromName(value);
             }
 
-            int[] ints = value.Split(',').Select(o => int.Parse(o.Trim())).ToArray();
+            var ints = value.Split(',').Select(o => int.Parse(o.Trim())).ToArray();
             switch (ints.Length)
             {
                 case 4:

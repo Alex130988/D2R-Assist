@@ -17,9 +17,9 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **/
 
+using Gma.System.MouseKeyHook;
 using System;
 using System.Windows.Forms;
-using Gma.System.MouseKeyHook;
 
 namespace MapAssist
 {

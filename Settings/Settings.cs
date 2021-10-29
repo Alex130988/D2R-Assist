@@ -17,11 +17,11 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **/
 
+using MapAssist.Types;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
-using MapAssist.Types;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 
@@ -77,7 +77,7 @@ namespace MapAssist.Settings
 
         public static double Opacity = Convert.ToDouble(ConfigurationManager.AppSettings["Opacity"],
             System.Globalization.CultureInfo.InvariantCulture);
-            
+
         public static bool OverlayMode = Convert.ToBoolean(ConfigurationManager.AppSettings["OverlayMode"]);
 
         public static bool AlwaysOnTop = Convert.ToBoolean(ConfigurationManager.AppSettings["AlwaysOnTop"]);

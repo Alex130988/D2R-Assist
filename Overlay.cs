@@ -17,16 +17,16 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **/
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
-using MapAssist.Types;
+using Gma.System.MouseKeyHook;
 using MapAssist.Helpers;
 using MapAssist.Settings;
-using Gma.System.MouseKeyHook;
-using System.Numerics;
+using MapAssist.Types;
+using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Drawing;
+using System.Numerics;
+using System.Windows.Forms;
 
 namespace MapAssist
 {
@@ -80,8 +80,8 @@ namespace MapAssist
         {
             Settings.Map.InitMapColors();
             Rectangle screen = Screen.PrimaryScreen.WorkingArea;
-            int width = Width >= screen.Width ? screen.Width : (screen.Width + Width) / 2;
-            int height = Height >= screen.Height ? screen.Height : (screen.Height + Height) / 2;
+            var width = Width >= screen.Width ? screen.Width : (screen.Width + Width) / 2;
+            var height = Height >= screen.Height ? screen.Height : (screen.Height + Height) / 2;
             Location = new Point((screen.Width - width) / 2, (screen.Height - height) / 2);
             Size = new Size(width, height);
             Opacity = Settings.Map.Opacity;
@@ -184,8 +184,8 @@ namespace MapAssist
             {
                 float w = 0;
                 float h = 0;
-                float scale = 0.0F;
-                Vector2 center = new Vector2();
+                var scale = 0.0F;
+                var center = new Vector2();
 
                 if (ConfigurationManager.AppSettings["ZoomLevelDefault"] == null) { Settings.Map.ZoomLevel = 1; }
 
@@ -220,7 +220,7 @@ namespace MapAssist
 
                 Point playerPosInArea = _currentGameData.PlayerPosition.OffsetFrom(_areaData.Origin).OffsetFrom(_compositor.CropOffset);
 
-                Vector2 playerPos = new Vector2(playerPosInArea.X, playerPosInArea.Y);
+                var playerPos = new Vector2(playerPosInArea.X, playerPosInArea.Y);
                 Vector2 Transform(Vector2 p) =>
                     center +
                     DeltaInWorldToMinimapDelta(
@@ -229,9 +229,9 @@ namespace MapAssist
                         scale,
                         0);
 
-                var p1 = Transform(new Vector2(0, 0));
-                var p2 = Transform(new Vector2(gameMap.Width, 0));
-                var p4 = Transform(new Vector2(0, gameMap.Height));
+                Vector2 p1 = Transform(new Vector2(0, 0));
+                Vector2 p2 = Transform(new Vector2(gameMap.Width, 0));
+                Vector2 p4 = Transform(new Vector2(0, gameMap.Height));
 
                 PointF[] destinationPoints = {
                     new PointF(p1.X, p1.Y),

@@ -17,11 +17,11 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **/
 
+using MapAssist.Types;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
-using MapAssist.Types;
 
 namespace MapAssist.Helpers
 {
@@ -40,7 +40,7 @@ namespace MapAssist.Helpers
             GameObject.WirtCorpse,
             GameObject.HellForge
         };
-        
+
         private static readonly HashSet<GameObject> GoodChests = new HashSet<GameObject>
         {
             GameObject.GoodChest,
@@ -53,7 +53,7 @@ namespace MapAssist.Helpers
 
         public static List<PointOfInterest> Get(MapApi mapApi, AreaData areaData)
         {
-            List<PointOfInterest> pointOfInterest = new List<PointOfInterest>();
+            var pointOfInterest = new List<PointOfInterest>();
 
             switch (areaData.Area)
             {
@@ -66,7 +66,7 @@ namespace MapAssist.Helpers
                         Area.TalRashasTomb1, Area.TalRashasTomb2, Area.TalRashasTomb3, Area.TalRashasTomb4,
                         Area.TalRashasTomb5, Area.TalRashasTomb6, Area.TalRashasTomb7
                     };
-                    var realTomb = Area.None;
+                    Area realTomb = Area.None;
                     Parallel.ForEach(tombs, tombArea =>
                     {
                         AreaData tombData = mapApi.GetMapData(tombArea);
