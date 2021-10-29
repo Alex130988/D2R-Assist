@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace MapAssist
+namespace D2RAssist
 {
     partial class Overlay
     {

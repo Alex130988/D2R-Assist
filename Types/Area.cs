@@ -1,7 +1,7 @@
 ﻿/**
  *   Copyright (C) 2021 okaygo
  *
- *   https://github.com/misterokaygo/MapAssist/
+ *   https://github.com/misterokaygo/D2RAssist/
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 
 using System.Collections.Generic;
 
-namespace MapAssist.Types
+namespace D2RAssist.Types
 {
     public enum Area : uint
     {

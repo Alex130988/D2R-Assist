@@ -1,7 +1,7 @@
 ﻿/**
  *   Copyright (C) 2021 okaygo, OneXDeveloper
  *
- *   https://github.com/misterokaygo/MapAssist/
+ *   https://github.com/misterokaygo/D2RAssist/
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,10 +17,10 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **/
 
-using MapAssist.Types;
+using D2RAssist.Types;
 using System.Drawing;
 
-namespace MapAssist.Helpers
+namespace D2RAssist.Helpers
 {
     public static class Extensions
     {

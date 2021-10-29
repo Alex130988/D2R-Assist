@@ -1,7 +1,7 @@
 ﻿/**
  *   Copyright (C) 2021 okaygo
  *
- *   https://github.com/misterokaygo/MapAssist/
+ *   https://github.com/misterokaygo/D2RAssist/
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  **/
 
-using MapAssist.Types;
+using D2RAssist.Types;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -25,7 +25,7 @@ using System.Drawing;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 
-namespace MapAssist.Settings
+namespace D2RAssist.Settings
 {
     public static class Rendering
     {
