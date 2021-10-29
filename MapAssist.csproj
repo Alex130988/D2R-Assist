@@ -9,7 +9,8 @@
     <ProjectGuid>{FB3AC437-B7BB-42FF-A2A2-F10551F95F6C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>MapAssist</RootNamespace>
-    <CustomAssemblyName></CustomAssemblyName>
+    <CustomAssemblyName>
+    </CustomAssemblyName>
     <AssemblyName Condition=" '$(CustomAssemblyName)' != '' ">$(CustomAssemblyName)</AssemblyName>
     <AssemblyName Condition=" '$(Configuration)' == 'Release' AND '$(CustomAssemblyName)' == '' ">$(RandomGuid)</AssemblyName>
     <AssemblyName Condition=" '$(Configuration)' == 'Debug' AND '$(CustomAssemblyName)' == ''">MapAssist</AssemblyName>
@@ -156,6 +157,11 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Costura.Fody">
+      <Version>5.7.0</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="MouseKeyHook">
       <Version>5.6.0</Version>
     </PackageReference>
