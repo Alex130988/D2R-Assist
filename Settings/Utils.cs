@@ -50,8 +50,18 @@ namespace D2RAssist.Settings
 
         private T GetConfigValue<T>(string key, Func<string, T> converter, T fallback = default)
         {
-            var valueString = configuration.Config[key].ToString();
-            return string.IsNullOrWhiteSpace(valueString) ? fallback : converter.Invoke(valueString);
+            try
+            {
+                var valueString = configuration.Config[key].ToString();
+
+                return string.IsNullOrWhiteSpace(valueString) ? fallback : converter.Invoke(valueString);
+            }
+            catch(Exception e)
+            {
+
+                Console.WriteLine($"Utils.GetConfigValue: key {key} not found in config.json");
+            }
+            return fallback;
         }
 
         public Color ParseColor(string value)

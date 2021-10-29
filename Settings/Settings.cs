@@ -84,17 +84,20 @@ namespace D2RAssist.Settings
 
             if (!MapColors.ContainsKey(type))
             {
-                var mapColorString = configuration.Config[key].ToString();
-                if (!string.IsNullOrEmpty(mapColorString))
+                try
                 {
-                    MapColors[type] = utils.ParseColor(mapColorString);
+                    var mapColorString = configuration.Config[key].ToString();
+                    if (!string.IsNullOrEmpty(mapColorString))
+                    {
+                        MapColors[type] = utils.ParseColor(mapColorString);
+                    }
                 }
-                else
+                catch(NullReferenceException e)
                 {
+                    Console.WriteLine($"Map.LookupMapColor: key {key} not found in config.json");
                     MapColors[type] = null;
                 }
             }
-
             return MapColors[type];
         }
 
