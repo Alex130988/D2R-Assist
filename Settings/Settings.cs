@@ -94,7 +94,6 @@ namespace D2RAssist.Settings
                 }
                 catch(NullReferenceException e)
                 {
-                    Console.WriteLine($"Map.LookupMapColor: key {key} not found in config.json");
                     MapColors[type] = null;
                 }
             }

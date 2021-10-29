@@ -59,7 +59,6 @@ namespace D2RAssist.Settings
             catch(Exception e)
             {
 
-                Console.WriteLine($"Utils.GetConfigValue: key {key} not found in config.json");
             }
             return fallback;
         }
