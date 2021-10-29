@@ -8,7 +8,7 @@
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
     <ProjectGuid>{FB3AC437-B7BB-42FF-A2A2-F10551F95F6C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>MapAssist</RootNamespace>
+    <RootNamespace>D2RAssist</RootNamespace>
     <CustomAssemblyName>
     </CustomAssemblyName>
     <AssemblyName Condition=" '$(CustomAssemblyName)' != '' ">$(CustomAssemblyName)</AssemblyName>
@@ -90,6 +90,12 @@
   <PropertyGroup />
   <PropertyGroup>
     <NoWin32Manifest>true</NoWin32Manifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>D2RAssist.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyName>D2R-Assist</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
