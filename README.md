@@ -1,6 +1,6 @@
-#### D2R-Assist
+######## D2R-Assist
 
-##!German version below!
+####!German version below!
 
 THE 'MapAssist' TOOL AND CONTENTS THEREIN WERE INTENDED FOR INFORMATIONAL AND LEARNING PURPOSES ONLY.
 
@@ -12,7 +12,7 @@ Use at your own risk! The MapAssist team makes no expression of warranty or clai
 
 All software projects are subject to their own licensing, and copyrights. All other product names and any registered and unregistered trademarks mentioned are used for identification purposes only and remain the exclusive property of their respective owners.
 
-##!German version!
+####!German version!
 
 DAS TOOL 'MapAssist' UND DER INHALT DARIN SIND NUR ZU INFORMATIONS- UND LERNZWECKEN BESTIMMT.
 
