@@ -1,10 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace D2RAssist.Settings
 {
@@ -13,11 +8,11 @@ namespace D2RAssist.Settings
         JObject Config { get; }
     }
 
-
     public class Configuration : IConfiguration
     {
         public Configuration()
         {
+            //TODO: Config is now array of objects, instead of list of values
             Config = JObject.Parse(File.ReadAllText("config.json"));
         }
 
