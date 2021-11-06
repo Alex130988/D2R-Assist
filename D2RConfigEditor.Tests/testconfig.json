@@ -1,0 +1,32 @@
+[
+  {
+    "Name": "ApiEndpoint",
+    "Value": "http://mod-com.eu:8001/",
+    "Type": "Text",
+    "Comment": ""
+  },
+  {
+    "Name": "Opacity",
+    "Value": "0.7",
+    "Type": "Float",
+    "Comment": ""
+  },
+  {
+    "Name": "OverlayMode",
+    "Value": "false",
+    "Type": "Bool",
+    "Comment": ""
+  },
+  {
+    "Name": "UpdateTime",
+    "Value": "100",
+    "Type": "Int",
+    "Comment": ""
+  },
+  {
+    "Name": "MapColor[0]",
+    "Value": "50,50,50",
+    "Type": "Color",
+    "Comment": "Background"
+  }
+]

@@ -3,8 +3,8 @@ using System.Reflection;
 
 [assembly: AssemblyTitle("D2R-Assist")]
 [assembly: AssemblyDescription("D2R-Assist")]
-[assembly: AssemblyVersion("3.0.0.0")]
-[assembly: AssemblyFileVersion("3.0.0.0")]
+[assembly: AssemblyVersion("3.0.0.1")]
+[assembly: AssemblyFileVersion("3.0.0.1")]
 [assembly: ComVisible(true)]
 /**
 *   Copyright (C) 2021 okaygo
